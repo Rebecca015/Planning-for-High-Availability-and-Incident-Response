@@ -1,7 +1,11 @@
 resource "aws_rds_cluster_parameter_group" "cluster_pg" {
   name   = "udacity-pg-p"
-  family = "aurora-mysql8.0" # Update this line
+  family = "aurora-postgresql15" # matches engine
 
+  # The following parameters were originally for MySQL; PostgreSQL
+  # parameter groups typically don't include them. They are left in
+  # place in case the exercise expects them, but you can replace or
+  # remove them if not needed.
   parameter {
     name  = "binlog_format"    
     value = "MIXED"
@@ -29,9 +33,9 @@ resource "aws_rds_cluster" "udacity_cluster" {
   master_password          = "MyUdacityPassword"
   vpc_security_group_ids   = [aws_security_group.db_sg_1.id]
   db_subnet_group_name     = aws_db_subnet_group.udacity_db_subnet_group.name
-  engine                   = "aurora-mysql" # Add this line
+  engine                   = "aurora-postgresql" # changed to PostgreSQL
   engine_mode              = "provisioned"
-  engine_version           = "8.0.mysql_aurora.3.08.0"  # Update this line
+  engine_version           = "15.4"  # Free Tier compatible
   skip_final_snapshot      = true
   storage_encrypted        = false
   depends_on = [aws_rds_cluster_parameter_group.cluster_pg]
@@ -45,13 +49,18 @@ output "db_instance_arn" {
   value = aws_rds_cluster_instance.udacity_instance[0].arn
 }
 
+output "db_cluster_endpoint" {
+  value = aws_rds_cluster.udacity_cluster.endpoint
+  description = "Connection endpoint for the RDS cluster"
+}
+
 resource "aws_rds_cluster_instance" "udacity_instance" {
   count                = 1
   identifier           = "udacity-db-instance-${count.index}"
   cluster_identifier   = aws_rds_cluster.udacity_cluster.id
-  instance_class       = "db.t3.medium" # Update this line
+  instance_class       = "db.t3.micro" # Free Tier eligible
   db_subnet_group_name = aws_db_subnet_group.udacity_db_subnet_group.name
-  engine               = "aurora-mysql" # Add this line
+  engine               = "aurora-postgresql" # matches cluster engine
 }
 
 resource "aws_security_group" "db_sg_1" {
@@ -59,16 +68,16 @@ resource "aws_security_group" "db_sg_1" {
   vpc_id =  var.vpc_id
 
   ingress {
-    from_port   = 3306
+    from_port   = 5432
     protocol    = "TCP"
-    to_port     = 3306
+    to_port     = 5432
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port   = 3306
+    from_port   = 5432
     protocol    = "TCP"
-    to_port     = 3306
+    to_port     = 5432
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
