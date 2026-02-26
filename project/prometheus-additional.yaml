@@ -8,7 +8,7 @@
   metrics_path: /probe
   params:
     module: [http_2xx]
-  static_configs:
+  static_configs:.
     - targets:
       - http://3.133.136.245
   relabel_configs:

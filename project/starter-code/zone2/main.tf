@@ -9,9 +9,9 @@ locals {
    }
  }
 
-  module "vpc" {
+ module "vpc" {
    source     = "./modules/vpc"
-   cidr_block = "10.100.0.0/16"
+   cidr_block = "10.200.0.0/16"
 
    account_owner = local.name
    name          = "${local.name}-project"

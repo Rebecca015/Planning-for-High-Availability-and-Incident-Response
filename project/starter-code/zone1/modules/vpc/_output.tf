@@ -9,3 +9,8 @@ output "vpc_id" {
  output "public_subnet_ids" {
    value = aws_subnet.public.*.id
  }
+
+ output "availability_zones" {
+   description = "The VPC has IPs in multiple availability zones (VPC)"
+   value = aws_subnet.private.*.availability_zone
+ }

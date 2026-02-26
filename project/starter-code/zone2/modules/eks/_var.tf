@@ -27,7 +27,15 @@ variable "name" {}
    default = {}
  }
 
- variable "instance_policy" {}
- variable "cloudwatch_policy" {}
- variable "cluster_role" {}
- variable "node_role"{}
+variable "instance_policy" {
+  default = null
+}
+ variable "cloudwatch_policy" {
+  default = null
+ }
+ variable "cluster_role" {
+  default = null
+ }
+ variable "node_role"{
+  default = null
+ }

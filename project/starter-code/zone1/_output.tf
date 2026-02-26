@@ -13,3 +13,15 @@ output "account_id" {
  output "db_cluster_id" {
   value = module.project_rds_p.db_cluster_arn
 }
+
+output "vpc_id" {
+  value = module.vpc.vpc_id
+}
+
+output "public_subnet_ids" {
+  value = module.vpc.public_subnet_ids
+}
+
+output "private_subnet_ids" {
+  value = module.vpc.private_subnet_ids
+}
