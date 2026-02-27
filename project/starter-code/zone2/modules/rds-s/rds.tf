@@ -1,4 +1,3 @@
-
 resource "aws_rds_cluster_parameter_group" "cluster_pg-s" {
   name   = "udacity-pg-s"
   family = "aurora-mysql8.0" # Update this line
@@ -34,13 +33,15 @@ resource "aws_rds_cluster" "udacity_cluster-s" {
   engine_mode              = "provisioned"
   engine_version           = "8.0.mysql_aurora.3.08.0"  # Update this line
   backup_retention_period  = 5
+  replication_source_identifier = var.primary_db_cluster_arn
+  source_region            = "us-east-2"
   skip_final_snapshot      = true
   storage_encrypted        = false
   depends_on = [aws_rds_cluster_parameter_group.cluster_pg-s]
 }
 
 resource "aws_rds_cluster_instance" "udacity_instance-s" {
-  count                = 1
+  count                = 2
   identifier           = "udacity-db-instance-${count.index}-s"
   cluster_identifier   = aws_rds_cluster.udacity_cluster-s.id
   instance_class       = "db.t3.medium" # Update this line
